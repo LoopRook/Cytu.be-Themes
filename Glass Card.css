@@ -1,0 +1,12 @@
+:root{
+  --bg:url(https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1600&q=60) center/cover fixed no-repeat;
+  --pane:rgba(8,12,20,.55); --stroke:rgba(255,255,255,.15); --text:#eef2ff; --accent:#9ccaff; --radius:18px;
+}
+html, body{background:var(--bg); color:var(--text);}
+#videowrap, #playlistwrap, #chatwrap{
+  background:var(--pane); border:1px solid var(--stroke); border-radius:var(--radius);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.queue_entry{border-bottom:1px solid var(--stroke);}
+a{color:var(--accent);}
+input, textarea, select{background:rgba(0,0,0,.35); color:var(--text); border:1px solid var(--stroke); border-radius:12px;}
