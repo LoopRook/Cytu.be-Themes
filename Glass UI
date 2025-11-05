@@ -1,0 +1,472 @@
+/* =========================================================
+   CyTube + Saved Playlists/Drive DB — Glass UI (v1.0)
+   Matches the “glass” aesthetic: soft blur, frosted panes,
+   neon accents, rounded chips, low-ink typography.
+   ========================================================= */
+
+/* ---------- Design tokens ---------- */
+:root {
+  --bg0: #0b0f14;                 /* deep canvas */
+  --bg1: rgba(19, 24, 31, 0.55);   /* frosted panel */
+  --bg2: rgba(19, 24, 31, 0.78);   /* denser panel */
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-strong: rgba(255, 255, 255, 0.12);
+  --border: rgba(255,255,255,0.14);
+  --border-soft: rgba(255,255,255,0.08);
+  --text: #e6edf3;
+  --text-soft: #c2c7ce;
+  --muted: #9aa3ad;
+
+  --accent: #7cf6ff;              /* cyan glass */
+  --accent-2: #a78bfa;            /* violet edge */
+  --danger: #ff6b6b;
+  --success: #5df2a2;
+  --warn: #ffd166;
+
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-pill: 999px;
+
+  --shadow-1: 0 8px 24px rgba(0,0,0,.35);
+  --shadow-2: 0 14px 40px rgba(0,0,0,.45);
+
+  --blur: blur(14px);
+  --blur-strong: blur(22px);
+
+  --chip-bg: rgba(255, 255, 255, 0.08);
+  --chip-bd: rgba(255, 255, 255, 0.14);
+
+  --focus: 0 0 0 2px rgba(124,246,255,.55), 0 0 0 6px rgba(124,246,255,.12);
+
+  /* Compactness toggles */
+  --pad: 12px;
+  --gap: 10px;
+  --line: 1.45;
+}
+
+/* ---------- Global backdrop ---------- */
+html, body {
+  background:
+    radial-gradient(1200px 800px at 15% 5%, #101722 0%, #0b0f14 60%),
+    radial-gradient(900px 700px at 85% 90%, #0e141b 0%, #0b0f14 60%),
+    #0b0f14;
+  color: var(--text);
+}
+
+body, .container, .row, #mainpage {
+  font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  letter-spacing: .2px;
+}
+
+/* Smooth scroll, subtle selection */
+html { scroll-behavior: smooth; }
+::selection { background: rgba(124,246,255,.22); color: var(--text); }
+
+/* ---------- Scrollbars ---------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.18) transparent;
+}
+*::-webkit-scrollbar { height: 10px; width: 10px; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.18);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- Utility glass classes (used by userscript too) ---------- */
+.glass,
+.erika-glass,
+#queue, #messagebuffer, #userlist, #pollwrap, #plmeta, .well, .modal-content, .dropdown-menu {
+  background: var(--bg1);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-1);
+  border-radius: var(--radius-lg);
+}
+
+.glass-strong, .erika-glass-strong {
+  background: var(--bg2);
+  -webkit-backdrop-filter: var(--blur-strong);
+  backdrop-filter: var(--blur-strong);
+  border: 1px solid var(--glass-strong);
+  box-shadow: var(--shadow-2);
+}
+
+.glass-card, .erika-card {
+  background: linear-gradient( to bottom, rgba(255,255,255,.06), rgba(255,255,255,.03) );
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  padding: calc(var(--pad) * 1.1);
+}
+
+/* ---------- Navbar ---------- */
+.navbar, .navbar-inverse, .navbar-default {
+  background: linear-gradient(to bottom, rgba(16,22,30,.75), rgba(12,16,22,.65));
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+.navbar .navbar-brand, .navbar a, .navbar-nav > li > a {
+  color: var(--text-soft) !important;
+}
+.navbar .navbar-brand { color: var(--text) !important; font-weight: 600; }
+
+/* ---------- Layout panes ---------- */
+#videowrap, #rightpane, #leftpane, #mainpage {
+  gap: var(--gap);
+}
+#videowrap {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-2);
+  border: 1px solid var(--border);
+}
+#chatwrap, #playlistrow, #rightpane, #leftpane {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+/* Chat */
+#messagebuffer {
+  padding: var(--pad);
+  line-height: var(--line);
+}
+#chatline, #guestname {
+  background: var(--glass);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 10px 14px;
+}
+#chatline:focus, #guestname:focus { outline: none; box-shadow: var(--focus); }
+
+/* Userlist */
+#userlist .userlist_item, .userlist_item {
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+#userlist .userlist_item:hover {
+  background: rgba(255,255,255,.06);
+}
+
+/* Playlist queue */
+#queue .queue_entry, .queue_entry {
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: linear-gradient(to bottom right, rgba(255,255,255,.05), rgba(255,255,255,.025));
+}
+#queue .queue_active, .queue_active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(124,246,255,.28) inset;
+}
+
+/* Queue controls / meta */
+#plmeta {
+  padding: var(--pad);
+  display: grid;
+  gap: var(--gap);
+}
+
+/* Polls */
+#pollwrap { padding: var(--pad); }
+
+/* ---------- Buttons & chips ---------- */
+.btn, button, .btn-default, .btn-primary, .btn-danger, .btn-success {
+  background: linear-gradient(to bottom, rgba(255,255,255,.12), rgba(255,255,255,.05));
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  transition: transform .06s ease, background .2s ease, box-shadow .2s ease;
+}
+.btn:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(to bottom, rgba(255,255,255,.18), rgba(255,255,255,.08));
+}
+.btn:active { transform: translateY(0); }
+.btn-primary { border-color: rgba(124,246,255,.35); box-shadow: 0 0 0 1px rgba(124,246,255,.18) inset; }
+.btn-danger { border-color: rgba(255,107,107,.35); }
+.btn-success{ border-color: rgba(93,242,162,.35); }
+
+.badge, .label, .erika-chip {
+  background: var(--chip-bg);
+  border: 1px solid var(--chip-bd);
+  color: var(--text-soft);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  font-weight: 500;
+}
+
+/* ---------- Forms ---------- */
+input[type="text"], input[type="search"], input[type="number"], textarea, select {
+  background: var(--glass);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+/* ---------- Modals, dropdowns ---------- */
+.modal-content { padding: var(--pad); }
+.modal-header, .modal-footer {
+  border-color: var(--border-soft);
+}
+.dropdown-menu {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+/* ---------- Alerts ---------- */
+.alert {
+  background: linear-gradient(to right, rgba(255,255,255,.07), rgba(255,255,255,.03));
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 12px;
+}
+.alert-danger { border-color: rgba(255,107,107,.35); }
+.alert-success{ border-color: rgba(93,242,162,.35); }
+.alert-warning{ border-color: rgba(255,209,102,.35); }
+
+/* ---------- Tiny text tones ---------- */
+.text-muted { color: var(--muted) !important; }
+a, .link { color: var(--accent); }
+a:hover { color: #b8fbff; }
+
+/* =========================================================
+   PLAYLIST MANAGER (Userscript) — unified styling
+   Expected containers/classes (stable in our master):
+   #erika-playlist-panel (root, docked)
+   .erika-toolbar       (top control bar)
+   .erika-search        (search input area)
+   .erika-grid          (card grid/list)
+   .erika-item          (single playlist/item row)
+   .erika-collapsible   (section wrapper w/ data-state)
+   .erika-dropzone      (import/export/drag target)
+   ========================================================= */
+
+/* Root panel (docked side or overlay) */
+#erika-playlist-panel {
+  position: relative;
+  background: var(--bg2);
+  -webkit-backdrop-filter: var(--blur-strong);
+  backdrop-filter: var(--blur-strong);
+  border: 1px solid var(--glass-strong);
+  border-radius: var(--radius-xl);
+  padding: calc(var(--pad) * 1.2);
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+}
+
+/* If panel is floating overlay */
+#erika-playlist-panel.is-floating {
+  position: fixed;
+  right: 16px;
+  top: 76px;
+  width: min(460px, 38vw);
+  max-height: calc(100vh - 100px);
+  overflow: auto;
+  z-index: 9999;
+}
+
+/* Toolbar */
+.erika-toolbar {
+  display: flex;
+  gap: var(--gap);
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--gap);
+}
+.erika-toolbar .btn {
+  padding: 8px 12px;
+  line-height: 1.2;
+}
+
+/* Search */
+.erika-search {
+  display: flex;
+  gap: var(--gap);
+  align-items: center;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 6px 10px;
+}
+.erika-search input[type="search"] {
+  background: transparent;
+  border: 0;
+  padding: 6px 10px;
+  flex: 1 1 auto;
+}
+
+/* Grid/List */
+.erika-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 1200px) {
+  .erika-grid.cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Item card/row */
+.erika-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: linear-gradient(to bottom right, rgba(255,255,255,.06), rgba(255,255,255,.035));
+  border: 1px solid var(--border-soft);
+}
+.erika-item:hover {
+  border-color: rgba(124,246,255,.28);
+  box-shadow: 0 0 0 2px rgba(124,246,255,.12) inset;
+}
+.erika-item .erika-item-meta {
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  color: var(--text-soft);
+  font-size: 12.5px;
+}
+.erika-item .erika-actions {
+  display: flex; gap: 8px; align-items: center;
+}
+
+/* Collapsible sections (Saved / Drive / Recent etc.) */
+.erika-collapsible {
+  margin-top: 8px;
+  border-top: 1px dashed var(--border-soft);
+  padding-top: 10px;
+}
+.erika-collapsible > .erika-collapsible-head {
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 6px;
+}
+.erika-collapsible[data-state="closed"] .erika-collapsible-body { display: none; }
+
+/* Chips / tags */
+.erika-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px;
+}
+
+/* Dropzone (import/export) */
+.erika-dropzone {
+  border: 1.5px dashed rgba(124,246,255,.45);
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+  color: var(--text-soft);
+  background: rgba(124,246,255,.06);
+}
+.erika-dropzone.is-dragover {
+  background: rgba(124,246,255,.12);
+  box-shadow: 0 0 0 2px rgba(124,246,255,.25) inset;
+}
+
+/* Inline toasts / status */
+.erika-toast {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 10000;
+  padding: 10px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(12,16,22,.75);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+/* Progress / loaders */
+.erika-progress {
+  height: 8px;
+  background: rgba(255,255,255,.08);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+}
+.erika-progress > span {
+  display: block;
+  height: 100%;
+  width: var(--pct, 0%);
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+/* Table-like variant for list mode */
+.erika-list {
+  display: grid; gap: 6px;
+}
+.erika-list .erika-item {
+  grid-template-columns: 1fr 120px 120px auto;
+}
+
+/* ---------- Integrations with native CyTube elements ---------- */
+#addfromurl, #mediaurl, #customembed-title, #customembed-content {
+  background: var(--glass);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+#queue_next, #queue_end, #queue_clear, #mediaurl + .btn, #customembed-content + .btn {
+  border-radius: var(--radius-pill);
+}
+
+/* Chat message tones */
+#messagebuffer .chat-msg, .chat-msg {
+  color: var(--text);
+}
+#messagebuffer .timestamp { color: var(--muted); }
+#messagebuffer .username { color: var(--accent); }
+
+/* Tooltips (Bootstrap-ish) */
+.tooltip .tooltip-inner {
+  background: var(--bg2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.tooltip.top .tooltip-arrow { border-top-color: var(--bg2); }
+
+/* ---------- Performance safe mode (disables blur on low-end) ---------- */
+@media (prefers-reduced-transparency: reduce) {
+  .glass, .erika-glass, .glass-strong, .erika-glass-strong,
+  .glass-card, .erika-card, .navbar, .dropdown-menu, .modal-content,
+  #erika-playlist-panel {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background: rgba(19, 24, 31, 0.9) !important;
+  }
+}
+
+/* ---------- Compact mode (optional) ---------- */
+/* Add class `compact-glass` to <body> to enable */
+body.compact-glass {
+  --pad: 10px;
+  --gap: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --blur: blur(10px);
+}
+body.compact-glass #queue .queue_entry { padding: 8px 10px; margin-bottom: 6px; }
+body.compact-glass .btn { padding: 6px 10px; }
+
+/* ---------- Accent swap (optional) ---------- */
+/* Add class `accent-violet` to <body> to bias toward violet */
+body.accent-violet { --accent: var(--accent-2); }
